@@ -9,6 +9,10 @@ public class usuario {
         this.id = id;
     }
 
+    public usuario(int id) {
+        this.id = id;
+    }
+
     public String getNombre() {
         return nombre;
     }

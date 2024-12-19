@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 public class Cajero {
     String tarjeta;
     String nip;
-    CuentaDebito trajetaDebito;
+    debito trajetaDebito;
 
     public boolean validarCuenta(String tarjetaDebito) {
         //5 numeros, deben ser int
@@ -39,7 +39,7 @@ public class Cajero {
     }
 
     public boolean checarSiExisteCuenta() {
-        this.tarjetaDebito = new CuentaDebito(this.tarjeta);
+        this.tarjetaDebito = new debito(this.tarjeta);
         if (this.tarjetaDebito.getIdCuenta() != null) {
             if (this.tarjetaDebito.getNip().equals(this.nip)) {
                 return true;

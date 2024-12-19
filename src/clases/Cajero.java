@@ -10,6 +10,14 @@ public class Cajero {
     String nip;
     debito trajetaDebito;
 
+    public Cajero() {
+        this.tarjetaDebito = null;
+    }
+
+    public CuentaDebito getTarjetaDebito() {
+        return tarjetaDebito;
+    }
+
     public boolean validarCuenta(String tarjetaDebito) {
         //5 numeros, deben ser int
         try {
@@ -38,7 +46,7 @@ public class Cajero {
         }
     }
 
-    public boolean checarSiExisteCuenta() {
+    /*public boolean checarSiExisteCuenta() {
         this.tarjetaDebito = new debito(this.tarjeta);
         if (this.tarjetaDebito.getIdCuenta() != null) {
             if (this.tarjetaDebito.getNip().equals(this.nip)) {
@@ -49,7 +57,7 @@ public class Cajero {
         } else {
             return false;
         }
-    }
+    }*/
     public String mostrarSaldo() {
         return "" + this.tarjetaDebito.getSaldo();
     }

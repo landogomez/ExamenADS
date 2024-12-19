@@ -7,6 +7,6 @@ public class Transaccion {
     private Integer tipo;
     private Integer monto;
     private Date fecha;
-   
+
 
 }

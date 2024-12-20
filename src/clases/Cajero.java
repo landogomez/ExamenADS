@@ -11,59 +11,59 @@ public class Cajero {
         this.cuenta = cuenta;
         this.credito = credito;
     }
-    
-    public void mostrarMenu() {
-        Scanner scanner = new Scanner(System.in);
-        int opcion;
-        do {
+	
+	public void mostrarMenu() {
+		Scanner scanner = new Scanner(System.in);
+		int opcion;
+		do {
 			System.out.println("\n\n   MENÚ DEL CAJERO AUTOMÁTICO");
 			System.out.println("********************************");
-            System.out.println("1. Retirar Efectivo");
-            System.out.println("2. Depositar Efectivo");
-            System.out.println("3. Pagar Servicios");
-            System.out.println("4. Consultar Saldo");
-            System.out.println("5. Mostrar Movimientos");
-            System.out.println("6. Salir");
-            System.out.print("Selecciona una opción: ");
+			System.out.println("1. Retirar Efectivo");
+			System.out.println("2. Depositar Efectivo");
+			System.out.println("3. Pagar Servicios");
+			System.out.println("4. Consultar Saldo");
+			System.out.println("5. Mostrar Movimientos");
+			System.out.println("6. Salir");
+			System.out.print("Selecciona una opción: ");
 			
-            while (!scanner.hasNextInt()) {
+			while (!scanner.hasNextInt()) {
 				System.out.println("\n***************************************************************");
-                System.out.println("   ENTRADA NO VÁLIDA. POR FAVOR, INGRESE UN NÚMERO DEL MENÚ:");
+				System.out.println("   ENTRADA NO VÁLIDA. POR FAVOR, INGRESE UN NÚMERO DEL MENÚ:");
 				System.out.println("***************************************************************");
-                scanner.next();
-            }
-            
-            opcion = scanner.nextInt();
-            
-            switch (opcion) {
-                case 1:
-                    retirarEfectivo(scanner);
-                    break;
-                case 2:
-                    depositarEfectivo(scanner);
-                    break;
-                case 3:
-                    pagarServicios(scanner);
-                    break;
-                case 4:
-                    consultarSaldo();
-                    break;
-                case 5:
-                    mostrarMovimientos();
-                    break;
-                case 6:
-                    System.out.println("\n**********************************************");
-                    System.out.println("   GRACIAS POR USAR EL CAJERO. ¡HASTA LUEGO!");
+				scanner.next();
+			}
+			
+			opcion = scanner.nextInt();
+			
+			switch (opcion) {
+				case 1:
+					retirarEfectivo(scanner);
+					break;
+				case 2:
+					depositarEfectivo(scanner);
+					break;
+				case 3:
+					pagarServicios(scanner);
+					break;
+				case 4:
+					consultarSaldo();
+					break;
+				case 5:
+					mostrarMovimientos();
+					break;
+				case 6:
+					System.out.println("\n**********************************************");
+					System.out.println("   GRACIAS POR USAR EL CAJERO. ¡HASTA LUEGO!");
 					System.out.println("**********************************************");
-                    break;
-                default:
-                    System.out.println("\n*****************************************");
-                    System.out.println("   OPCIÓN NO VÁLIDA. INTENTA DE NUEVO.");
+					break;
+				default:
+					System.out.println("\n*****************************************");
+					System.out.println("   OPCIÓN NO VÁLIDA. INTENTA DE NUEVO.");
 					System.out.println("*****************************************");
-            }
-        } while (opcion != 6);
-        scanner.close();
-    }
+			}
+		} while (opcion != 6);
+		scanner.close();
+	}
     
     private void retirarEfectivo(Scanner scanner) {
         double monto;

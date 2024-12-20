@@ -297,4 +297,34 @@ public class Cajero {
         }
     }
 
+    public void ValidarCuenta() {
+        Scanner scanner = new Scanner(System.in);
+        String NumeroCuenta;
+        String PIN;
+        boolean cuentaValida = false;
+        while (true) {
+            // Solicitar número de cuenta
+            System.out.print("Ingrese el número de cuenta: ");
+            NumeroCuenta = scanner.nextLine();
+            // Validar número de cuenta
+            if (NumeroCuenta.equals(cuenta.getNumeroCuenta())) {
+                for (int i = 0; i < 3; i++) {
+                    System.out.print("Ingrese el PIN (4 dígitos): ");
+                    PIN = scanner.nextLine();
+                    if (PIN.equals(cuenta.getPin())) {
+                        System.out.println("PIN correcto. Bienvenido.");
+                        return;
+                    } else {
+                        System.out.println("PIN incorrecto. Intente de nuevo.");
+                        System.out.println("Intentos restantes: " + (2 - i));
+                    }
+                }
+                System.out.println("Demasiados intentos fallidos.");
+                System.exit(2);
+            } else {
+                System.out.println("Número de cuenta inválido. Intente de nuevo.");
+            }
+        }
+    }
+
 }

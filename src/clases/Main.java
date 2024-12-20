@@ -19,7 +19,7 @@ public class Main {
         Cajero cajero = new Cajero(cuenta, credito);
 
         // Iniciar sesión y mostrar el menú
-        //cajero.iniciarSesion();
+        cajero.ValidarCuenta();
         cajero.mostrarMenu();
     }
 }

@@ -16,7 +16,7 @@ public class Cajero {
         Scanner scanner = new Scanner(System.in);
         int opcion;
         do {
-            System.out.println("\n\n   MENÚ DEL CAJERO AUTOMÁTICO");
+			System.out.println("\n\n   MENÚ DEL CAJERO AUTOMÁTICO");
 			System.out.println("********************************");
             System.out.println("1. Retirar Efectivo");
             System.out.println("2. Depositar Efectivo");

@@ -26,7 +26,7 @@ public class Cajero {
             System.out.print("Selecciona una opción: ");
             
             while (!scanner.hasNextInt()) {
-                System.out.println("Entrada no válida. Por favor, ingrese un número entero:");
+                System.out.println("Entrada no válida. Por favor, ingrese un número del menu:");
                 scanner.next();
             }
             
@@ -143,7 +143,7 @@ public class Cajero {
                 System.out.println("4. Tarjeta de crédito");
                 System.out.println("5. Cancelar");
                 while (!scanner.hasNextInt()) {
-                    System.out.println("Entrada no válida. Por favor, ingrese un número entero:");
+                    System.out.println("Entrada no válida. Por favor, ingrese un número del menu:");
                     scanner.next(); // Descartar la entrada no válida
                 }
                 servicio = scanner.nextInt();

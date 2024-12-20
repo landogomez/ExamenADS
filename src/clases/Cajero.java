@@ -1,9 +1,7 @@
 package src.clases;
 
 import java.util.Scanner;
-
 import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class Cajero {
     private Cuenta cuenta;

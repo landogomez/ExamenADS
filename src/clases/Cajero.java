@@ -1,62 +1,16 @@
 package src.clases;
 
-import java.util.ArrayList;
+import java.util.Scanner;
+
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 public class Cajero {
-    private List<Cuenta> cuentas;  // Lista para almacenar las cuentas
-    private Cuenta cuentaActual;    // Cuenta actual del usuario
+    private Cuenta cuenta;
     private TarjetaCredito credito;
-
-    public Cajero(List<Cuenta> cuentas, TarjetaCredito credito) {
-        this.cuentas = cuentas;
+    public Cajero(Cuenta cuenta, TarjetaCredito credito) {
+        this.cuenta = cuenta;
         this.credito = credito;
-    }
-
-    public void iniciarSesion() {
-        Scanner scanner = new Scanner(System.in);
-        boolean cuentaValida = false;
-
-        while (!cuentaValida) {
-            System.out.print("Ingrese el número de cuenta: ");
-            String numeroCuenta = scanner.nextLine();
-
-            Cuenta cuenta = encontrarCuentaPorNumero(numeroCuenta);
-            if (cuenta != null) {
-                cuentaActual = cuenta;
-                cuentaValida = validarPIN();
-            } else {
-                System.out.println("Número de cuenta no encontrado. Intente de nuevo.");
-            }
-        }
-    }
-
-    private boolean validarPIN() {
-        Scanner scanner = new Scanner(System.in);
-        for (int i = 0; i < 3; i++) {
-            System.out.print("Ingrese el PIN (4 dígitos): ");
-            String PIN = scanner.nextLine();
-
-            if (PIN.equals(cuentaActual.getPin())) {
-                System.out.println("PIN correcto. Bienvenido.");
-                return true;
-            } else {
-                System.out.println("PIN incorrecto. Intentos restantes: " + (2 - i));
-            }
-        }
-        System.out.println("Demasiados intentos fallidos.");
-        return false;
-    }
-
-    private Cuenta encontrarCuentaPorNumero(String numeroCuenta) {
-        for (Cuenta cuenta : cuentas) {
-            if (cuenta.getNumeroCuenta().equals(numeroCuenta)) {
-                return cuenta;
-            }
-        }
-        return null;
     }
 
     public void mostrarMenu() {
@@ -69,17 +23,16 @@ public class Cajero {
             System.out.println("3. Pagar Servicios");
             System.out.println("4. Consultar Saldo");
             System.out.println("5. Mostrar Movimientos");
-            System.out.println("6. Cerrar sesión");
-            System.out.println("7. Salir");
+            System.out.println("6. Salir");
             System.out.print("Selecciona una opción: ");
-
+            
             while (!scanner.hasNextInt()) {
-                System.out.println("Entrada no válida. Por favor, ingrese un número del menú:");
+                System.out.println("Entrada no válida. Por favor, ingrese un numero del menu:");
                 scanner.next();
             }
-
+            
             opcion = scanner.nextInt();
-
+            
             switch (opcion) {
                 case 1:
                     retirarEfectivo(scanner);
@@ -97,16 +50,12 @@ public class Cajero {
                     mostrarMovimientos();
                     break;
                 case 6:
-                    System.out.println("Cerrando sesión...");
-                    cuentaActual = null;
-                    iniciarSesion();
-                case 7:
                     System.out.println("Gracias por usar el cajero. ¡Hasta luego!");
                     break;
                 default:
                     System.out.println("Opción no válida. Intenta de nuevo.");
             }
-        } while (opcion != 7);
+        } while (opcion != 6);
         scanner.close();
     }
 
@@ -116,7 +65,7 @@ public class Cajero {
             try {
                 System.out.print("Ingresa el monto a retirar (Solo denominaciones de 50) o presiona 0 para cancelar: ");
                 while (!scanner.hasNextDouble()) {
-                    System.out.println("Entrada no válida. Por favor, ingrese números:");
+                    System.out.println("Entrada no válida. Por favor, ingrese numeros:");
                     scanner.next(); // Descartar la entrada no válida
                 }
                 monto = scanner.nextDouble();
@@ -126,21 +75,27 @@ public class Cajero {
                     return;
                 }
 
-                if (monto <= 0 || monto % 50 != 0 || monto > cuentaActual.getSaldo()) {
-                    System.out.println("Monto inválido o saldo insuficiente. Intenta de nuevo.");
+                if (monto <= 0 || monto % 50 != 0 || monto >= 20000) {
+                    System.out.println("Monto inválido. Intenta de nuevo.");
                     continue;
                 }
 
-                cuentaActual.setSaldo(cuentaActual.getSaldo() - monto);
-                cuentaActual.agregarMovimiento(new Movimiento("Retiro", monto));
-                System.out.println("Retiro exitoso. Saldo actual: $" + String.format("%,.2f", cuentaActual.getSaldo()));
+                if (monto > cuenta.getSaldo()) {
+                    System.out.println("Saldo insuficiente. Intenta de nuevo.");
+                    continue;
+                }
+
+                cuenta.setSaldo(cuenta.getSaldo() - monto);
+                cuenta.agregarMovimiento(new Movimiento("Retiro", monto));
+                System.out.println("Retiro exitoso. Saldo actual: $" + String.format("%,.2f",(double)cuenta.getSaldo()));
                 break;
             } catch (InputMismatchException e) {
-                System.out.println("Entrada inválida. Por favor, ingresa un número válido.");
+                System.out.println("Entrada inválida. Por favor, ingresa un número entero.");
                 scanner.next(); // Limpiar el buffer del scanner
             }
         } while (true);
     }
+
 
     private void depositarEfectivo(Scanner scanner) {
         double monto;
@@ -148,7 +103,7 @@ public class Cajero {
             try {
                 System.out.print("Ingresa el monto a depositar o presiona 0 para cancelar: ");
                 while (!scanner.hasNextDouble()) {
-                    System.out.println("Entrada no válida. Por favor, ingrese números:");
+                    System.out.println("Entrada no válida. Por favor, ingrese numeros:");
                     scanner.next(); // Descartar la entrada no válida
                 }
                 monto = scanner.nextDouble();
@@ -158,15 +113,139 @@ public class Cajero {
                     return;
                 }
 
-                if (monto <= 0 || monto > 20000) {
+                if (monto <= 0 || monto % 50 != 0 || monto > 20000) {
                     System.out.println("Monto inválido. Intenta de nuevo.");
                     continue;
                 }
 
-                cuentaActual.setSaldo(cuentaActual.getSaldo() + monto);
-                cuentaActual.agregarMovimiento(new Movimiento("Depósito", monto));
-                System.out.println("Depósito exitoso. Saldo actual: $" + String.format("%,.2f", cuentaActual.getSaldo()));
+                cuenta.setSaldo(cuenta.getSaldo() + monto);
+                cuenta.agregarMovimiento(new Movimiento("Depósito", monto));
+                System.out.println("Depósito exitoso. Saldo actual: $" + String.format("%,.2f", (double) cuenta.getSaldo()));
                 break;
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida. Por favor, ingresa un número entero.");
+                scanner.next(); // Limpiar el buffer del scanner
+            }
+        } while (true);
+    }
+
+
+
+    private void pagarServicios(Scanner scanner) {
+        int servicio;
+        double monto;
+
+        do {
+            try {
+                System.out.println("--- Menu de servicios ---");
+                System.out.println("1. Agua");
+                System.out.println("2. Luz");
+                System.out.println("3. Gas");
+                System.out.println("4. Tarjeta de crédito");
+                System.out.println("5. Cancelar");
+                System.out.println("Selecciona el servicio a pagar:");
+                while (!scanner.hasNextInt()) {
+                    System.out.println("Entrada no válida. Por favor, ingrese un numero del menu:");
+                    scanner.next(); // Descartar la entrada no válida
+                }
+                servicio = scanner.nextInt();
+                
+                if (servicio == 5) {
+                    System.out.println("Operación cancelada.");
+                    return;
+                }
+
+                if (servicio < 1 || servicio > 4) {
+                    System.out.println("Opción de servicio no válida. Intenta de nuevo.");
+                    continue;
+                }
+                if(servicio == 4){
+                    System.out.println("\nSaldo actual: $" + String.format("%,.2f", (double) credito.getDeuda()));
+                    while(true){
+                        System.out.print("Ingresa el monto a pagar O escribe 'salir' para cancelar: ");
+                        String ent = scanner.next();
+                        if (ent.equalsIgnoreCase("salir")) {
+                            System.out.println("Operación cancelada.");
+                            break;
+                        }
+                        try{
+                            double mont = Double.parseDouble(ent);
+                            if (mont <= 0 || mont> credito.getDeuda()) {
+                                System.out.println("Monto inválido. Intenta de nuevo.");
+                                continue;
+                            }
+                            credito.setDeuda(credito.getDeuda()-mont);
+                            cuenta.setSaldo(cuenta.getSaldo() - mont);
+                            cuenta.agregarMovimiento(new Movimiento("Pago de Tarjeta de Credito", mont));
+                            System.out.println("\nPago exitoso. Deuda actual: $" + String.format("%,.2f", (double) credito.getDeuda()));
+                            break;
+                        }catch (NumberFormatException e){
+                             System.out.println("Entrada no válida. Por favor, ingresa un número del menu o 'salir'.");
+                        }
+                    }
+                }
+                if(servicio==1){
+                    System.out.print("Ingresa el monto a pagar: ");
+                    while (!scanner.hasNextDouble()) {
+                        System.out.println("Entrada no válida. Por favor, ingrese numeros:");
+                        scanner.next(); // Descartar la entrada no válida
+                    }
+                    monto = scanner.nextDouble();
+                    if (monto <= 0) {
+                        System.out.println("Monto inválido. Debe ser mayor a 0. Intenta de nuevo.");
+                        continue;
+                    }
+                    if (monto <= cuenta.getSaldo()) {
+                        cuenta.setSaldo(cuenta.getSaldo() - monto);
+                        cuenta.agregarMovimiento(new Movimiento("Pago de Servicio Agua", monto));
+                        System.out.println("Pago exitoso. Saldo actual: $" + String.format("%,.2f", (double) cuenta.getSaldo()));
+                        break;
+                    } else {
+                        System.out.println("Saldo insuficiente. Intenta de nuevo.");
+                    }
+                }
+                
+                if(servicio==2){
+                    System.out.print("Ingresa el monto a pagar: ");
+                    while (!scanner.hasNextDouble()) {
+                        System.out.println("Entrada no válida. Por favor, ingrese numeros:");
+                        scanner.next(); // Descartar la entrada no válida
+                    }
+                    monto = scanner.nextDouble();
+                    if (monto <= 0) {
+                        System.out.println("Monto inválido. Debe ser mayor a 0. Intenta de nuevo.");
+                        continue;
+                    }
+                    if (monto <= cuenta.getSaldo()) {
+                        cuenta.setSaldo(cuenta.getSaldo() - monto);
+                        cuenta.agregarMovimiento(new Movimiento("Pago de Servicio Luz", monto));
+                        System.out.println("Pago exitoso. Saldo actual: $" + String.format("%,.2f", (double) cuenta.getSaldo()));
+                        break;
+                    } else {
+                        System.out.println("Saldo insuficiente. Intenta de nuevo.");
+                    }
+                }
+                if(servicio==3){
+                    System.out.print("Ingresa el monto a pagar: ");
+                    while (!scanner.hasNextDouble()) {
+                        System.out.println("Entrada no válida. Por favor, ingrese numeros:");
+                        scanner.next(); // Descartar la entrada no válida
+                    }
+                    monto = scanner.nextDouble();
+                    if (monto <= 0) {
+                        System.out.println("Monto inválido. Debe ser mayor a 0. Intenta de nuevo.");
+                        continue;
+                    }
+                    if (monto <= cuenta.getSaldo()) {
+                        cuenta.setSaldo(cuenta.getSaldo() - monto);
+                        cuenta.agregarMovimiento(new Movimiento("Pago de Servicio Gas", monto));
+                        System.out.println("Pago exitoso. Saldo actual: $" + String.format("%,.2f", (double) cuenta.getSaldo()));
+                        break;
+                    } else {
+                        System.out.println("Saldo insuficiente. Intenta de nuevo.");
+                    }
+                }
+                
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida. Por favor, ingresa un número válido.");
                 scanner.next(); // Limpiar el buffer del scanner
@@ -174,22 +253,22 @@ public class Cajero {
         } while (true);
     }
 
-    private void pagarServicios(Scanner scanner) {
-        // Similar a las opciones anteriores, puedes implementar el pago de servicios aquí.
-    }
+
+
 
     private void consultarSaldo() {
-        System.out.println("\nSaldo actual: $" + String.format("%,.2f", cuentaActual.getSaldo()));
+        System.out.println("\nSaldo actual: $" + String.format("%,.2f", (double) cuenta.getSaldo()));
     }
 
     private void mostrarMovimientos() {
-        if (cuentaActual.getMovimientos().isEmpty()) {
+        if (cuenta.getMovimientos().isEmpty()) {
             System.out.println("No hay movimientos por mostrar.");
         } else {
             System.out.println("Últimos movimientos:");
-            for (Movimiento movimiento : cuentaActual.getMovimientos()) {
+            for (Movimiento movimiento : cuenta.getMovimientos()) {
                 System.out.println(movimiento.getTipo() + ": $" + movimiento.getMonto() + " en " + movimiento.getFecha());
             }
         }
     }
+
 }

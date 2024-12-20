@@ -1,5 +1,6 @@
 package src.clases;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Cajero {
@@ -50,16 +51,40 @@ public class Cajero {
     }
 
     private void retirarEfectivo(Scanner scanner) {
-        System.out.print("Ingresa el monto a retirar: ");
-        double monto = scanner.nextDouble();
-        if (monto > 0 && monto % 50 == 0 && monto <= 20000 && monto <= cuenta.getSaldo()) {
-            cuenta.setSaldo(cuenta.getSaldo() - monto);
-            cuenta.agregarMovimiento(new Movimiento("Retiro", monto));
-            System.out.println("Retiro exitoso. Saldo actual: $" + cuenta.getSaldo());
-        } else {
-            System.out.println("Monto inválido o saldo insuficiente.");
-        }
+        double monto;
+        do {
+            try {
+                System.out.print("Ingresa el monto a retirar (Solo denominaciones de 50) o ingresa 0 para cancelar: ");
+                monto = scanner.nextDouble();
+
+                if (monto == 0) {
+                    System.out.println("Operación cancelada.");
+                    return;
+                }
+
+                if (monto <= 0 || monto % 50 != 0 || monto > 20000) {
+                    System.out.println("Monto inválido. Intenta de nuevo.");
+                    continue;
+                }
+
+                if (monto > cuenta.getSaldo()) {
+                    System.out.println("Saldo insuficiente. Intenta de nuevo.");
+                    continue;
+                }
+
+                cuenta.setSaldo(cuenta.getSaldo() - monto);
+                cuenta.agregarMovimiento(new Movimiento("Retiro", monto));
+                System.out.println("Retiro exitoso. Saldo actual: $" + cuenta.getSaldo());
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida. Por favor, ingresa un número entero.");
+                scanner.next(); // Limpiar el buffer del scanner
+            }
+        } while (true);
     }
+
+
+
 
     private void depositarEfectivo(Scanner scanner) {
         System.out.print("Ingresa el monto a depositar: ");

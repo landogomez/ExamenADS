@@ -6,16 +6,18 @@ import java.util.InputMismatchException;
 public class Cajero {
     private Cuenta cuenta;
     private TarjetaCredito credito;
+    
     public Cajero(Cuenta cuenta, TarjetaCredito credito) {
         this.cuenta = cuenta;
         this.credito = credito;
     }
-
+    
     public void mostrarMenu() {
         Scanner scanner = new Scanner(System.in);
         int opcion;
         do {
-            System.out.println("\n--- Menú del Cajero Automático ---");
+            System.out.println("\n\n   MENÚ DEL CAJERO AUTOMÁTICO");
+			System.out.println("********************************");
             System.out.println("1. Retirar Efectivo");
             System.out.println("2. Depositar Efectivo");
             System.out.println("3. Pagar Servicios");
@@ -23,9 +25,11 @@ public class Cajero {
             System.out.println("5. Mostrar Movimientos");
             System.out.println("6. Salir");
             System.out.print("Selecciona una opción: ");
-            
+			
             while (!scanner.hasNextInt()) {
-                System.out.println("Entrada no válida. Por favor, ingrese un numero del menu:");
+				System.out.println("\n***************************************************************");
+                System.out.println("   ENTRADA NO VÁLIDA. POR FAVOR, INGRESE UN NÚMERO DEL MENÚ:");
+				System.out.println("***************************************************************");
                 scanner.next();
             }
             
@@ -48,15 +52,19 @@ public class Cajero {
                     mostrarMovimientos();
                     break;
                 case 6:
-                    System.out.println("Gracias por usar el cajero. ¡Hasta luego!");
+                    System.out.println("\n**********************************************");
+                    System.out.println("   GRACIAS POR USAR EL CAJERO. ¡HASTA LUEGO!");
+					System.out.println("**********************************************");
                     break;
                 default:
-                    System.out.println("Opción no válida. Intenta de nuevo.");
+                    System.out.println("\n*****************************************");
+                    System.out.println("   OPCIÓN NO VÁLIDA. INTENTA DE NUEVO.");
+					System.out.println("*****************************************");
             }
         } while (opcion != 6);
         scanner.close();
     }
-
+    
     private void retirarEfectivo(Scanner scanner) {
         double monto;
         do {

@@ -3,31 +3,25 @@ package src.clases;
 import java.util.Date;
 
 public class Movimiento {
-    private Integer idMovimiento;
-    private Integer monto;
+    private String tipo;
+    private double monto;
     private Date fecha;
-    private String descripcion;
 
-    public Movimiento(Integer idMovimiento, Integer monto, Date fecha, String descripcion) {
-        this.idMovimiento = idMovimiento;
+    public Movimiento(String tipo, double monto) {
+        this.tipo = tipo;
         this.monto = monto;
-        this.fecha = fecha;
-        this.descripcion = descripcion;
+        this.fecha = new Date();
     }
 
-    public Integer getIdMovimiento() {
-        return idMovimiento;
+    public String getTipo() {
+        return tipo;
     }
 
-    public Integer getMonto() {
+    public double getMonto() {
         return monto;
     }
 
     public Date getFecha() {
         return fecha;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
     }
 }

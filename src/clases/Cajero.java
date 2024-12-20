@@ -1,234 +1,105 @@
 package src.clases;
 
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Scanner;
 
 public class Cajero {
-    String tarjeta;
-    String nip;
-    debito trajetaDebito;
+    private Cuenta cuenta;
 
-    public Cajero() {
-        this.tarjetaDebito = null;
+    public Cajero(Cuenta cuenta) {
+        this.cuenta = cuenta;
     }
 
-    public CuentaDebito getTarjetaDebito() {
-        return tarjetaDebito;
-    }
+    public void mostrarMenu() {
+        Scanner scanner = new Scanner(System.in);
+        int opcion;
+        do {
+            System.out.println("\n--- Menú del Cajero Automático ---");
+            System.out.println("1. Retirar Efectivo");
+            System.out.println("2. Depositar Efectivo");
+            System.out.println("3. Pagar Servicios");
+            System.out.println("4. Consultar Saldo");
+            System.out.println("5. Mostrar Movimientos");
+            System.out.println("6. Salir");
+            System.out.print("Selecciona una opción: ");
+            opcion = scanner.nextInt();
 
-    public boolean validarCuenta(String tarjetaDebito) {
-        //5 numeros, deben ser int
-        try {
-            int numTarjeta = Integer.parseInt(tarjetaDebito);
-            if (tarjetaDebito.length() == 5) {
-                this.tarjeta = tarjetaDebito;
-                return true;
+            switch (opcion) {
+                case 1:
+                    retirarEfectivo(scanner);
+                    break;
+                case 2:
+                    depositarEfectivo(scanner);
+                    break;
+                case 3:
+                    pagarServicios(scanner);
+                    break;
+                case 4:
+                    consultarSaldo();
+                    break;
+                case 5:
+                    mostrarMovimientos();
+                    break;
+                case 6:
+                    System.out.println("Gracias por usar el cajero. ¡Hasta luego!");
+                    break;
+                default:
+                    System.out.println("Opción no válida. Intenta de nuevo.");
             }
-            return false;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+        } while (opcion != 6);
+        scanner.close();
     }
 
-    public boolean validarNip(String nip) {
-        //4 numeros, deben ser int
-        try {
-            int numNip = Integer.parseInt(nip);
-            if (nip.length() == 4) {
-                this.nip = nip;
-                return true;
-            }
-            return false;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    /*public boolean checarSiExisteCuenta() {
-        this.tarjetaDebito = new debito(this.tarjeta);
-        if (this.tarjetaDebito.getIdCuenta() != null) {
-            if (this.tarjetaDebito.getNip().equals(this.nip)) {
-                return true;
-            } else {
-                return false;
-            }
+    private void retirarEfectivo(Scanner scanner) {
+        System.out.print("Ingresa el monto a retirar: ");
+        double monto = scanner.nextDouble();
+        if (monto > 0 && monto % 50 == 0 && monto <= 20000 && monto <= cuenta.getSaldo()) {
+            cuenta.setSaldo(cuenta.getSaldo() - monto);
+            cuenta.agregarMovimiento(new Movimiento("Retiro", monto));
+            System.out.println("Retiro exitoso. Saldo actual: $" + cuenta.getSaldo());
         } else {
-            return false;
-        }
-    }*/
-    public String mostrarSaldo() {
-        return "" + this.tarjetaDebito.getSaldo();
-    }
-
-    public String retirar(String cantidad) {
-        try {
-            int minDeposito = 100;
-            if (cantidad != null) {
-                double cantidadRetirar = Double.parseDouble(cantidad);
-                double saldoActual = this.tarjetaDebito.getSaldo();
-                if(cantidadRetirar<minDeposito){
-                    return "Cantidad minima a retirar $100!!!";
-                }
-                if(cantidadRetirar>5000){
-                    return "Se puede retirar máximo $5000";
-                }
-
-                if (cantidadRetirar > saldoActual) {
-                    return "Saldo insuficiente, intenta de nuevo!!";
-                } else {
-                    double saldoNuevo = saldoActual - cantidadRetirar;
-                    boolean setSaldo = this.tarjetaDebito.setSaldo(saldoNuevo);
-                    if (setSaldo) {
-                        return "Retiro de $" + cantidad + " actualizado";
-                    } else {
-                        return "error al actualizar saldo!!!";
-                    }
-                }
-            } else {
-                return "Agrega una cantidad a retirar por favor!!";
-            }
-        } catch (NumberFormatException e) {
-            return "Cantidad a retirar no valida!!!";
+            System.out.println("Monto inválido o saldo insuficiente.");
         }
     }
 
-    public String depositar(String cantidad) {
-        try {
-            if (cantidad != null) {
-                int minDeposito = 100;
-                int maxDeposito = 6000;
-                double deposito = Double.parseDouble(cantidad);
-                if(deposito<minDeposito){
-                    return "Cantidad minima a depositar $100!!!";
-                }
-                if(deposito>maxDeposito){
-                    return "Cantidad máxima a depositar es: $"+maxDeposito;
-                }
-                double saldoActual = this.tarjetaDebito.getSaldo();
-
-                double saldoNuevo = saldoActual + deposito;
-                boolean setSaldo = this.tarjetaDebito.setSaldo(saldoNuevo);
-                if (setSaldo) {
-
-                    return "Deposito de $" + cantidad + " actualizado";
-                } else {
-                    return "error al actualizar saldo!!!";
-                }
-
-            } else {
-                return "Agrega una cantidad a retirar por favor!!";
-            }
-        } catch (NumberFormatException e) {
-            return "Cantidad a retirar no valida!!!";
-        }
-    }
-
-    public String mostrarNumTarjCred() {
-        return "" + this.tarjetaDebito.getTarjetaCredito().getNumTarjeta();
-    }
-
-    public String mostrarSaldoTarjCred() {
-        return "" + this.tarjetaDebito.getTarjetaCredito().getDeuda();
-    }
-
-    public boolean pagarTotalTarjCred() {
-        try {
-            double pagoT = 0.0;
-            this.tarjetaDebito.getTarjetaCredito().actualizarDeuda(pagoT);
-            return true;
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Cajero.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
-
-    public boolean pagarTarjCred(String pago) {
-        try {
-            double deudaF;
-            double pagoP = Double.parseDouble(pago);
-            double deudaT = this.tarjetaDebito.getTarjetaCredito().getDeuda();
-            deudaF = deudaT - pagoP;
-            this.tarjetaDebito.getTarjetaCredito().actualizarDeuda(deudaF);
-            return true;
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Cajero.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
-    public String pagarServicio(String pago) {
-        double saldo = this.tarjetaDebito.getSaldo();
-        try {
-            double pagoP = Double.parseDouble(pago);
-            if (pagoP > saldo) {
-                return "El pago es mayor que salgo, intenta de nuevo!!!";
-            } else {
-                double saldoF = saldo - pagoP;
-                this.tarjetaDebito.setSaldo(saldoF);
-                return "Pago de $" + pago + " fue exitoso.";
-            }
-        } catch (NumberFormatException e) {
-            return "Cantidad a pagar no valida!!!";
-        }
-    }
-
-    public StringBuilder obtenerMovimientos(int ultimosN) {
-        StringBuilder sb = new StringBuilder();
-        List<Movimientos> movimientos = this.tarjetaDebito.getMovimientos(ultimosN);
-        if (movimientos == null) {
-            sb.append("No hay movimientos en esta cuenta");
+    private void depositarEfectivo(Scanner scanner) {
+        System.out.print("Ingresa el monto a depositar: ");
+        double monto = scanner.nextDouble();
+        if (monto > 0 && monto % 50 == 0 && monto <= 20000) {
+            cuenta.setSaldo(cuenta.getSaldo() + monto);
+            cuenta.agregarMovimiento(new Movimiento("Depósito", monto));
+            System.out.println("Depósito exitoso. Saldo actual: $" + cuenta.getSaldo());
         } else {
-            for (Movimientos movimiento : movimientos) {
-                sb.append("Tipo: ").append(movimiento.getTipo()).append(", Monto: ").append(movimiento.getMonto()).append(", Fecha y hora: ").append(movimiento.getFechaHora()).append("\n");
-            }
+            System.out.println("Monto inválido.");
         }
-        return sb;
     }
 
-    public boolean generarTransaccion(String monto, int tipo) {
-        try {
-            //case "0" -> tipo = "Deposito";
-            //case "1" -> tipo = "Retiro";
-            //case "2" -> tipo = "Pago de Tarjeta de credito";
-            //case "3" -> tipo = "Pago de servicios";
-            double montoT = Double.parseDouble(monto);
-            new Transaccion(montoT, tipo, this.tarjetaDebito);
-
-            return true;
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Cajero.class.getName()).log(Level.SEVERE, null, ex);
+    private void pagarServicios(Scanner scanner) {
+        System.out.println("Selecciona el servicio a pagar:");
+        System.out.println("1. Agua");
+        System.out.println("2. Luz");
+        System.out.println("3. Gas");
+        System.out.println("4. Tarjeta de crédito");
+        int servicio = scanner.nextInt();
+        System.out.print("Ingresa el monto a pagar: ");
+        double monto = scanner.nextDouble();
+        if (monto > 0 && monto <= cuenta.getSaldo()) {
+            cuenta.setSaldo(cuenta.getSaldo() - monto);
+            cuenta.agregarMovimiento(new Movimiento("Pago de Servicio", monto));
+            System.out.println("Pago exitoso. Saldo actual: $" + cuenta.getSaldo());
+        } else {
+            System.out.println("Monto inválido o saldo insuficiente.");
         }
-        return false;
     }
 
-    public void imprimirTicket(String monto, int tipo) {
-        //case "0" -> tipo = "Deposito";
-        //case "1" -> tipo = "Retiro";
-        //case "2" -> tipo = "Pago de Tarjeta de credito";
-        //case "3" -> tipo = "Pago de servicios";
-        Date fecha = new Date();
-        String tipoTransaccion;
-        switch (tipo) {
-            case 0 ->
-                    tipoTransaccion = "Deposito";
-            case 1 ->
-                    tipoTransaccion = "Retiro";
-            case 2 ->
-                    tipoTransaccion = "Pago de Tarjeta de credito";
-            case 3 ->
-                    tipoTransaccion = "Pago de servicios";
-            default -> {
-                tipoTransaccion = "Desconocida";
-            }
-        }
-        System.out.println("----------------Ticket-------------------");
-        System.out.println("Fecha: " + fecha);
-        System.out.println("Nombre completo: " + this.tarjetaDebito.getCliente().getNombreCompleto());
-        System.out.println("Tipo de transaccion: " + tipoTransaccion);
-        System.out.println("Cantidad: " + monto);
-        System.out.println("------------------------------------------");
+    private void consultarSaldo() {
+        System.out.println("Saldo actual: $" + cuenta.getSaldo());
     }
 
-
+    private void mostrarMovimientos() {
+        System.out.println("Últimos movimientos:");
+        for (Movimiento movimiento : cuenta.getMovimientos()) {
+            System.out.println(movimiento.getTipo() + ": $" + movimiento.getMonto() + " en " + movimiento.getFecha());
+        }
+    }
 }
+

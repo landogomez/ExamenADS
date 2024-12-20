@@ -12,150 +12,150 @@ public class Cajero {
         this.credito = credito;
     }
 	
-	public void mostrarMenu() {
-		Scanner scanner = new Scanner(System.in);
-		int opcion;
-		do {
-			System.out.println("\n\n   MENÚ DEL CAJERO AUTOMÁTICO");
-			System.out.println("********************************");
-			System.out.println("1. Retirar Efectivo");
-			System.out.println("2. Depositar Efectivo");
-			System.out.println("3. Pagar Servicios");
-			System.out.println("4. Consultar Saldo");
-			System.out.println("5. Mostrar Movimientos");
-			System.out.println("6. Salir");
-			System.out.print("Selecciona una opción: ");
-			
-			while (!scanner.hasNextInt()) {
-				System.out.println("\n***************************************************************");
-				System.out.println("   ENTRADA NO VÁLIDA. POR FAVOR, INGRESE UN NÚMERO DEL MENÚ:");
-				System.out.println("***************************************************************");
-				scanner.next();
-			}
-			
-			opcion = scanner.nextInt();
-			
-			switch (opcion) {
-				case 1:
-					retirarEfectivo(scanner);
-					break;
-				case 2:
-					depositarEfectivo(scanner);
-					break;
-				case 3:
-					pagarServicios(scanner);
-					break;
-				case 4:
-					consultarSaldo();
-					break;
-				case 5:
-					mostrarMovimientos();
-					break;
-				case 6:
-					System.out.println("\n**********************************************");
-					System.out.println("   GRACIAS POR USAR EL CAJERO. ¡HASTA LUEGO!");
-					System.out.println("**********************************************");
-					break;
-				default:
-					System.out.println("\n*****************************************");
-					System.out.println("   OPCIÓN NO VÁLIDA. INTENTA DE NUEVO.");
-					System.out.println("*****************************************");
-			}
-		} while (opcion != 6);
-		//scanner.close();
-	}
+    public void mostrarMenu() {
+            Scanner scanner = new Scanner(System.in);
+            int opcion;
+        do {
+            System.out.println("\n\n   MENÚ DEL CAJERO AUTOMÁTICO");
+            System.out.println("********************************");
+            System.out.println("1. Retirar Efectivo");
+            System.out.println("2. Depositar Efectivo");
+            System.out.println("3. Pagar Servicios");
+            System.out.println("4. Consultar Saldo");
+            System.out.println("5. Mostrar Movimientos");
+            System.out.println("6. Salir");
+            System.out.print("Selecciona una opción: ");
+                
+            while (!scanner.hasNextInt()) {
+                System.out.println("\n***************************************************************");
+                System.out.println("   ENTRADA NO VÁLIDA. POR FAVOR, INGRESE UN NÚMERO DEL MENÚ:");
+                System.out.println("***************************************************************");
+                scanner.next();
+            }
+            
+            opcion = scanner.nextInt();
+            
+            switch (opcion) {
+                case 1:
+                    retirarEfectivo(scanner);
+                    break;
+                case 2:
+                    depositarEfectivo(scanner);
+                    break;
+                case 3:
+                    pagarServicios(scanner);
+                    break;
+                case 4:
+                    consultarSaldo();
+                    break;
+                case 5:
+                    mostrarMovimientos();
+                    break;
+                case 6:
+                    System.out.println("\n**********************************************");
+                    System.out.println("   GRACIAS POR USAR EL CAJERO. ¡HASTA LUEGO!");
+                    System.out.println("**********************************************");
+                    break;
+                default:
+                    System.out.println("\n*****************************************");
+                    System.out.println("   OPCIÓN NO VÁLIDA. INTENTA DE NUEVO.");
+                    System.out.println("*****************************************");
+            }
+        } while (opcion != 6);
+        scanner.close();
+    }
+    
+    private void retirarEfectivo(Scanner scanner) {
+        double monto;
+        System.out.println("\n\n   RETIRAR EFECTIVO");	
+        System.out.println("********************************");
+        do {
+            try {
+                System.out.print("Ingresa el monto a retirar (Solo denominaciones de 50) o presiona 0 para cancelar: ");
+                monto = scanner.nextDouble();
+                
+                if (monto == 0) {
+                    System.out.println("\n********************************");
+                    System.out.println("   OPERACIÓN CANCELADA.");
+                    System.out.print("********************************");
+                    return;
+                }
+                
+                if (monto <= 0 || monto % 50 != 0 || monto >= 20000) {
+                    System.out.println("\n***************************************");
+                    System.out.println("   MONTO INVÁLIDO. INTENTA DE NUEVO.");
+                    System.out.println("***************************************\n");
+                    continue;
+                }
+                
+                if (monto > cuenta.getSaldo()) {
+                    System.out.println("\n*******************************************");
+                    System.out.println("   SALDO INSUFICIENTE. INTENTA DE NUEVO.");
+                    System.out.println("*******************************************\n");
+                    continue;
+                }
+                
+                cuenta.setSaldo(cuenta.getSaldo() - monto);
+                cuenta.agregarMovimiento(new Movimiento("Retiro", monto));
+                System.out.println("\n*******************************************");
+                System.out.println("   RETIRO EXITOSO. SALDO ACTUAL: $" + String.format("%,.2f",(double)cuenta.getSaldo()));
+                System.out.println("*******************************************");
+                System.out.println("\nPresiona ENTER Para Continuar...");
+                scanner.nextLine();
+                scanner.nextLine();
+                break;
+                				
+            } catch (InputMismatchException e) {
+                System.out.println("\n************************************************************");
+                System.out.println("   ENTRADA INVÁLIDA. POR FAVOR, INGRESA UN NÚMERO ENTERO.");
+                System.out.println("************************************************************\n");
+                scanner.next(); // Limpiar el buffer del scanner
+            }
+        } while (true);
+    }
 
-	private void retirarEfectivo(Scanner scanner) {
-		double monto;
-		System.out.println("\n\n   RETIRAR EFECTIVO");	
-		System.out.println("********************************");
-		do {
-			try {
-				System.out.print("Ingresa el monto a retirar (Solo denominaciones de 50) o presiona 0 para cancelar: ");
-				monto = scanner.nextDouble();
-				
-				if (monto == 0) {
-					System.out.println("\n********************************");
-					System.out.println("   OPERACIÓN CANCELADA.");
-					System.out.print("********************************");
-					return;
-				}
-				
-				if (monto <= 0 || monto % 50 != 0 || monto >= 20000) {
-					System.out.println("\n***************************************");
-					System.out.println("   MONTO INVÁLIDO. INTENTA DE NUEVO.");
-					System.out.println("***************************************\n");
-					continue;
-				}
-				
-				if (monto > cuenta.getSaldo()) {
-					System.out.println("\n*******************************************");
-					System.out.println("   SALDO INSUFICIENTE. INTENTA DE NUEVO.");
-					System.out.println("*******************************************\n");
-					continue;
-				}
-				
-				cuenta.setSaldo(cuenta.getSaldo() - monto);
-				cuenta.agregarMovimiento(new Movimiento("Retiro", monto));
-				System.out.println("\n*******************************************");
-				System.out.println("   RETIRO EXITOSO. SALDO ACTUAL: $" + String.format("%,.2f",(double)cuenta.getSaldo()));
-				System.out.println("*******************************************");
-				System.out.println("\nPresiona ENTER Para Continuar...");
-				scanner.nextLine();
-				scanner.nextLine();
-				break;
-				
-			} catch (InputMismatchException e) {
-				System.out.println("\n************************************************************");
-				System.out.println("   ENTRADA INVÁLIDA. POR FAVOR, INGRESA UN NÚMERO ENTERO.");
-				System.out.println("************************************************************\n");
-				scanner.next(); // Limpiar el buffer del scanner
-			}
-		} while (true);
-	}
+    private void depositarEfectivo(Scanner scanner) {
+        double monto;
+        System.out.println("\n\n   DEPOSITAR EFECTIVO");	
+        System.out.println("********************************");
+        do {
+            try {
+                System.out.print("Ingresa el monto a depositar o presiona 0 para cancelar: ");
+                monto = scanner.nextDouble();
+                
+                if (monto == 0) {
+                    System.out.println("\n********************************");
+                    System.out.println("   OPERACIÓN CANCELADA.");
+                    System.out.print("********************************");
+                    return;
+                }
+                
+                if (monto <= 0 || monto % 50 != 0 || monto > 20000) {
+                    System.out.println("\n***************************************");
+                    System.out.println("   MONTO INVÁLIDO. INTENTA DE NUEVO.");
+                    System.out.println("***************************************\n");
+                    continue;
+                }
+                
+                cuenta.setSaldo(cuenta.getSaldo() + monto);
+                cuenta.agregarMovimiento(new Movimiento("Depósito", monto));
+                System.out.println("\n**********************************************");
+                System.out.println("   DEPÓSITO EXITOSO. SALDO ACTUAL: $" + String.format("%,.2f", (double) cuenta.getSaldo()));
+                System.out.println("**********************************************");
+                System.out.println("\nPresiona ENTER Para Continuar...");
+                scanner.nextLine();
+                scanner.nextLine();
+                break;
+                
+            } catch (InputMismatchException e) {
+                System.out.println("\n************************************************************");
+                System.out.println("   ENTRADA INVÁLIDA. POR FAVOR, INGRESA UN NÚMERO ENTERO.");
+                System.out.println("************************************************************\n");
+                scanner.next(); // Limpiar el buffer del scanner
+            }
+        } while (true);
+    }
 
-	private void depositarEfectivo(Scanner scanner) {
-		double monto;
-		System.out.println("\n\n   DEPOSITAR EFECTIVO");	
-		System.out.println("********************************");
-		do {
-			try {
-				System.out.print("Ingresa el monto a depositar o presiona 0 para cancelar: ");
-				monto = scanner.nextDouble();
-				
-				if (monto == 0) {
-					System.out.println("\n********************************");
-					System.out.println("   OPERACIÓN CANCELADA.");
-					System.out.print("********************************");
-					return;
-				}
-				
-				if (monto <= 0 || monto % 50 != 0 || monto > 20000) {
-					System.out.println("\n***************************************");
-					System.out.println("   MONTO INVÁLIDO. INTENTA DE NUEVO.");
-					System.out.println("***************************************\n");
-					continue;
-				}
-				
-				cuenta.setSaldo(cuenta.getSaldo() + monto);
-				cuenta.agregarMovimiento(new Movimiento("Depósito", monto));
-				System.out.println("\n**********************************************");
-				System.out.println("   DEPÓSITO EXITOSO. SALDO ACTUAL: $" + String.format("%,.2f", (double) cuenta.getSaldo()));
-				System.out.println("**********************************************");
-				System.out.println("\nPresiona ENTER Para Continuar...");
-				scanner.nextLine();
-				scanner.nextLine();
-				break;
-				
-			} catch (InputMismatchException e) {
-				System.out.println("\n************************************************************");
-				System.out.println("   ENTRADA INVÁLIDA. POR FAVOR, INGRESA UN NÚMERO ENTERO.");
-				System.out.println("************************************************************\n");
-				scanner.next(); // Limpiar el buffer del scanner
-			}
-		} while (true);
-	}
-	
     private void pagarServicios(Scanner scanner) {
         int servicio;
         double monto;
@@ -278,9 +278,6 @@ public class Cajero {
             }
         } while (true);
     }
-
-
-
 
     private void consultarSaldo() {
         System.out.println("\nSaldo actual: $" + String.format("%,.2f", (double) cuenta.getSaldo()));

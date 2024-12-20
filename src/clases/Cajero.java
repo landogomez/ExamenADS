@@ -185,7 +185,7 @@ public class Cajero {
                     continue;
                 }
                 if(servicio == 4){
-                    System.out.println("\nSaldo actual: $" + String.format("%,.2f", (double) credito.getDeuda()));
+                    System.out.println("\nDeuda actual: $" + String.format("%,.2f", (double) credito.getDeuda()));
                     while(true){
                         System.out.print("Ingresa el monto a pagar O escribe 'salir' para cancelar: ");
                         String ent = scanner.next();
@@ -199,6 +199,7 @@ public class Cajero {
                                 System.out.println("Monto inválido. Intenta de nuevo.");
                                 continue;
                             }
+                            if (cuenta.getSaldo() - mont < 0) { System.out.println("Saldo insuficiente. Intenta de nuevo."); continue; }
                             credito.setDeuda(credito.getDeuda()-mont);
                             cuenta.setSaldo(cuenta.getSaldo() - mont);
                             cuenta.agregarMovimiento(new Movimiento("Pago de Tarjeta de Credito", mont));

@@ -1,5 +1,7 @@
 package src.clases;
 
+import java.util.Scanner;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -22,8 +24,14 @@ public class Cajero {
             System.out.println("5. Mostrar Movimientos");
             System.out.println("6. Salir");
             System.out.print("Selecciona una opción: ");
+            
+            while (!scanner.hasNextInt()) {
+                System.out.println("Entrada no válida. Por favor, ingrese un número entero:");
+                scanner.next();
+            }
+            
             opcion = scanner.nextInt();
-
+            
             switch (opcion) {
                 case 1:
                     retirarEfectivo(scanner);
@@ -55,6 +63,10 @@ public class Cajero {
         do {
             try {
                 System.out.print("Ingresa el monto a retirar (Solo denominaciones de 50) o presiona 0 para cancelar: ");
+                while (!scanner.hasNextDouble()) {
+                    System.out.println("Entrada no válida. Por favor, ingrese numeros:");
+                    scanner.next(); // Descartar la entrada no válida
+                }
                 monto = scanner.nextDouble();
 
                 if (monto == 0) {
@@ -89,6 +101,10 @@ public class Cajero {
         do {
             try {
                 System.out.print("Ingresa el monto a depositar o presiona 0 para cancelar: ");
+                while (!scanner.hasNextDouble()) {
+                    System.out.println("Entrada no válida. Por favor, ingrese numeros:");
+                    scanner.next(); // Descartar la entrada no válida
+                }
                 monto = scanner.nextDouble();
 
                 if (monto == 0) {
@@ -126,6 +142,10 @@ public class Cajero {
                 System.out.println("3. Gas");
                 System.out.println("4. Tarjeta de crédito");
                 System.out.println("5. Cancelar");
+                while (!scanner.hasNextInt()) {
+                    System.out.println("Entrada no válida. Por favor, ingrese un número entero:");
+                    scanner.next(); // Descartar la entrada no válida
+                }
                 servicio = scanner.nextInt();
 
                 if (servicio == 5) {
@@ -139,6 +159,10 @@ public class Cajero {
                 }
 
                 System.out.print("Ingresa el monto a pagar: ");
+                while (!scanner.hasNextDouble()) {
+                    System.out.println("Entrada no válida. Por favor, ingrese numeros:");
+                    scanner.next(); // Descartar la entrada no válida
+                }
                 monto = scanner.nextDouble();
 
                 if (monto <= 0) {
@@ -180,4 +204,3 @@ public class Cajero {
     }
 
 }
-

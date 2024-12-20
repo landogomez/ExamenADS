@@ -169,10 +169,15 @@ public class Cajero {
     }
 
     private void mostrarMovimientos() {
-        System.out.println("Últimos movimientos:");
-        for (Movimiento movimiento : cuenta.getMovimientos()) {
-            System.out.println(movimiento.getTipo() + ": $" + movimiento.getMonto() + " en " + movimiento.getFecha());
+        if (cuenta.getMovimientos().isEmpty()) {
+            System.out.println("No hay movimientos por mostrar.");
+        } else {
+            System.out.println("Últimos movimientos:");
+            for (Movimiento movimiento : cuenta.getMovimientos()) {
+                System.out.println(movimiento.getTipo() + ": $" + movimiento.getMonto() + " en " + movimiento.getFecha());
+            }
         }
     }
+
 }
 

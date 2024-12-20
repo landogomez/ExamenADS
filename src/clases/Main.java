@@ -2,6 +2,7 @@ package src.clases;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -19,7 +20,33 @@ public class Main {
         Cajero cajero = new Cajero(cuenta, credito);
 
         // Iniciar sesión y mostrar el menú
-        cajero.ValidarCuenta();
-        cajero.mostrarMenu();
+        //cajero.ValidarCuenta();
+        //cajero.mostrarMenu();
+
+        Scanner scanner = new Scanner(System.in);
+        int opcion;
+        do {
+            System.out.println("\n--- Menú Principal ---");
+            System.out.println("1. Iniciar sesión");
+            System.out.println("2. Salir");
+            System.out.print("Selecciona una opción: ");
+            opcion = scanner.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    if (cajero.ValidarCuenta()) {
+                        cajero.mostrarMenu();
+                    } else {
+                        System.out.println("Autenticación fallida. Intenta de nuevo.");
+                    }
+                    break;
+                case 2:
+                    System.out.println("Adiós.");
+                    break;
+                default:
+                    System.out.println("Opción no válida. Intenta de nuevo.");
+            }
+        } while (opcion != 2);
+        scanner.close();
     }
 }
